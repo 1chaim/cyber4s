@@ -1,42 +1,23 @@
-body {
-    width: auto;
-    height: auto;
-
-}
-
-.cell:hover {
-    background-color: gray;
-
-}
-
 table {
-    border: 10px solid black;
-    margin: 20px;
-
-}
-
-.cell {
-    height: 50px;
-    width: 50px;
-    border: 1px solid black;
-}
-
-.whi {
-    background: white;
-}
-
-.bla {
-    background: rgb(64, 64, 64);
-}
-
-/* /* .row-numbers {
-    height: auto;
-    width: auto;
-    text-align: center;
-} */
-.cell-click{
-  background-color: aqua;  
- }
- .possible-move {
-    background-color: green
- }
+    margin: 20px 700px;
+  }
+  
+  .light-cell {
+    background: rgb(211, 210, 210);
+    width: 45px;
+    height: 45px;
+  }
+  
+  .dark-cell {
+    background: rgb(63, 63, 63);
+    width: 45px;
+    height: 45px;
+  }
+  .selected{
+  background-color: rgba(240, 240, 84, 0.541);
+  }
+  
+  .possible-move{
+    background-color: rgba(192, 75, 75, 0.623);
+  }
+  
