@@ -1,15 +1,15 @@
 const BOARD_SIZE = 8;
-const WHITE_PLAYER = 'white';
-const BLACK_PLAYER = 'black';
+const WHITE_PLAYER = "white";
+const BLACK_PLAYER = "black";
 
-const PAWN = 'pawn';
-const ROOK = 'rook';
-const KNIGHT = 'knight';
-const BISHOP = 'bishop';
-const KING = 'king';
-const QUEEN = 'queen';
+const PAWN = "pawn";
+const ROOK = "rook";
+const KNIGHT = "knight";
+const BISHOP = "bishop";
+const KING = "king";
+const QUEEN = "queen";
 
-const CHESS_BOARD_ID = 'chess-board';
+const CHESS_BOARD_ID = "chess-board";
 
 let boardData;
 let table;
@@ -46,7 +46,7 @@ class Piece {
     } else if (this.type === QUEEN) {
       moves = this.getQueenMoves(boardData);
     } else {
-      console.log("Unknown type", type)
+      console.log("Unknown type", type);
     }
 
     // Get filtered absolute moves
@@ -54,7 +54,12 @@ class Piece {
     for (const absoluteMove of moves) {
       const absoluteRow = absoluteMove[0];
       const absoluteCol = absoluteMove[1];
-      if (absoluteRow >= 0 && absoluteRow <= 7 && absoluteCol >= 0 && absoluteCol <= 7) {
+      if (
+        absoluteRow >= 0 &&
+        absoluteRow <= 7 &&
+        absoluteCol >= 0 &&
+        absoluteCol <= 7
+      ) {
         filteredMoves.push(absoluteMove);
       }
     }
@@ -83,7 +88,6 @@ class Piece {
       result.push(position);
     }
 
-
     return result;
   }
 
@@ -100,7 +104,7 @@ class Piece {
     let result = [];
 
     for (let i = 1; i < BOARD_SIZE; i++) {
-      let row = this.row + directionRow * i; 
+      let row = this.row + directionRow * i;
       let col = this.col + directionCol * i;
       if (boardData.isEmpty(row, col)) {
         result.push([row, col]);
@@ -119,18 +123,27 @@ class Piece {
 
   getKnightMoves(boardData) {
     let result = [];
-    const relativeMoves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [-1, 2], [1, 2], [-1, -2], [1, -2]];
+    const relativeMoves = [
+      [2, 1],
+      [2, -1],
+      [-2, 1],
+      [-2, -1],
+      [-1, 2],
+      [1, 2],
+      [-1, -2],
+      [1, -2],
+    ];
     for (let relativeMove of relativeMoves) {
       let row = this.row + relativeMove[0];
       let col = this.col + relativeMove[1];
-    //  תצעד למקום הנבחר(גם אם יש שם אוייב)
+      //  תצעד למקום הנבחר(גם אם יש שם אוייב)
       if (!boardData.isPlayer(row, col, this.player)) {
         result.push([row, col]);
       }
     }
     return result;
   }
-// [1,2,3][1,2] = [1,2,3,1,2]
+  // [1,2,3]+[1,2] = [1,2,3,1,2] -concat
   getBishopMoves(boardData) {
     let result = [];
     result = result.concat(this.getMovesInDirection(-1, -1, boardData));
@@ -142,7 +155,16 @@ class Piece {
 
   getKingMoves(boardData) {
     let result = [];
-    const relativeMoves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+    const relativeMoves = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ];
     for (let relativeMove of relativeMoves) {
       let row = this.row + relativeMove[0];
       let col = this.col + relativeMove[1];
@@ -177,8 +199,8 @@ class BoardData {
   isEmpty(row, col) {
     return this.getPiece(row, col) === undefined;
   }
-//  הפונקציה מקבלת שורה ועמודה ואת צבע החייל שאנו מעבירים אליו
-// אם הוא לא קיים וגם צבעו אותו צבע - מחזיר טרו אחרת פולס
+  //  הפונקציה מקבלת שורה ועמודה ואת צבע החייל שאנו מעבירים אליו
+  // אם הוא לא קיים וגם צבעו אותו צבע - מחזיר אמת אחרת שקר
   isPlayer(row, col, player) {
     const piece = this.getPiece(row, col);
     return piece !== undefined && piece.player === player;
@@ -194,70 +216,63 @@ class BoardData {
     }
   }
 }
-// הפונקציה מחזירה מערך ריזולט עם כל המידע על הכלים בלוח
-function addFirstRowPieces(result, row, player) {
-    result.push(new Piece(row, 0, ROOK, player));
-    result.push(new Piece(row, 1, KNIGHT, player));
-    result.push(new Piece(row, 2, BISHOP, player));
-    result.push(new Piece(row, 3, KING, player));
-    result.push(new Piece(row, 4, QUEEN, player));
-    result.push(new Piece(row, 5, BISHOP, player));
-    result.push(new Piece(row, 6, KNIGHT, player));
-    result.push(new Piece(row, 7, ROOK, player));
-  }
-
-function getInitialPieces() {
-  let result = [];
-
-  addFirstRowPieces(result, 0, WHITE_PLAYER);
-  addFirstRowPieces(result, 7, BLACK_PLAYER);
-  
-  for (let i = 0; i < BOARD_SIZE; i++) {
-    result.push(new Piece(1, i, PAWN, WHITE_PLAYER));
-    result.push(new Piece(6, i, PAWN, BLACK_PLAYER));
-  }
-  return result;
-}
-
-
 
 // Adds an image to cell with the piece's image
 function addImage(cell, player, name) {
-  const image = document.createElement('img');
-  image.src = 'images/' + player + '/' + name + '.png';
+  const image = document.createElement("img");
+  image.src = "images/" + player + "/" + name + ".png";
   cell.appendChild(image);
 }
-// 
+//
 function showMovesForPiece(row, col) {
-    // console.log(row, col);
-    // Clear all previous possible moves
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      for (let j = 0; j < BOARD_SIZE; j++) {
-        table.rows[i].cells[j].classList.remove('possible-move');
-        table.rows[i].cells[j].classList.remove('selected');
-      }
+  // console.log(row, col);
+  // Clear all previous possible moves
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      table.rows[i].cells[j].classList.remove("possible-move");
+      table.rows[i].cells[j].classList.remove("selected");
     }
+  }
 
-    // מחזיר את הכלי עם הרו והקולום הספיציפי שלחצנו עליו
-    const piece = boardData.getPiece(row, col);
-    if (piece !== undefined) {
-      let possibleMoves = piece.getPossibleMoves(boardData);
-      for (let possibleMove of possibleMoves) {
-        const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
-        cell.classList.add('possible-move');
-      }
+  // מחזיר את הכלי עם הרו והקולום הספיציפי שלחצנו עליו
+  const piece = boardData.getPiece(row, col);
+  if (piece !== undefined) {
+    let possibleMoves = piece.getPossibleMoves(boardData);
+    for (let possibleMove of possibleMoves) {
+      const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
+      cell.classList.add("possible-move");
     }
+  }
 
-    table.rows[row].cells[col].classList.add('selected');
-    selectedPiece = piece;
+  table.rows[row].cells[col].classList.add("selected");
+  selectedPiece = piece;
 }
-// פונקציה שמופעלת לכל לחיצה על כל תא בטבלה שנלחץ 
+
+// Tries to actually make a move. Returns true if successful.
+function tryMove(piece, row, col) {
+  const possibleMoves = piece.getPossibleMoves(boardData);
+
+  // possibleMoves looks like this: [[1,2], [3,2]]
+  for (const possibleMove of possibleMoves) {
+    // possibleMove looks like this: [1,2]
+    if (possibleMove[0] === row && possibleMove[1] === col) {
+      // There is a legal move
+      boardData.removePiece(row, col);
+      piece.row = row;
+      piece.col = col;
+      return true;
+    }
+  }
+  return false;
+}
+
+// פונקציה שמופעלת לכל לחיצה על כל תא בטבלה שנלחץ
 // בשלב הראשון כשלוחץ על חייל החייל הוא אנדיפיינד-לא קיים.
-// אם לא קיים(לחיצה ראשונה על החייל) - אז תציג לי את כל המשבצות הפונציאליות לתזוזה(פוסיבולמובס)
+//אם לא קיים-תציג לי את המשבצות הפונטציאליות לפי המהלכים האפשרים
 // אם קיים(לאחר לחיצה ראשונה) - אפשר לנסות לנוע איתו
-// אם הצלחת להזיז אותו - מגדירים את הסלקפיס בחזרה ללא קיים 
+// אם הצלחת להזיז אותו - מגדירים את החייל הנבחר בחזרה ללא קיים
 // ע"מ שתוכל ללחוץ לחיצה הבאה ותיצור לי מחדש את הלוח עם הנתונים החדשים
-// אחרת רק תראה לי את הפולסיבולמובס
+// אחרת רק תראה לי את המהלכים האפשריים
 function onCellClick(event, row, col) {
   // selectedPiece - The current selected piece (selected in previous click)
   // row, col - the currently clicked cell - it may be empty, or have a piece.
@@ -275,29 +290,31 @@ function onCellClick(event, row, col) {
   }
 }
 
-// Tries to actually make a move. Returns true if successful.
-function tryMove(piece, row, col) {
-  const possibleMoves = piece.getPossibleMoves(boardData);
-  console.log(possibleMoves)
-  // possibleMoves looks like this: [[1,2], [3,2]]
-  for (const possibleMove of possibleMoves) {
-    // possibleMove looks like this: [1,2]
-    if (possibleMove[0] === row && possibleMove[1] === col) {
-      // There is a legal move
-      boardData.removePiece(row, col);
-      piece.row = row;
-      piece.col = col;
-      return true;
-    }
+// הפונקציה מחזירה מערך תוצאות על כל המידע על הכלים בלוח
+function addFirstRowPieces(result, row, player) {
+  result.push(new Piece(row, 0, ROOK, player));
+  result.push(new Piece(row, 1, KNIGHT, player));
+  result.push(new Piece(row, 2, BISHOP, player));
+  result.push(new Piece(row, 3, KING, player));
+  result.push(new Piece(row, 4, QUEEN, player));
+  result.push(new Piece(row, 5, BISHOP, player));
+  result.push(new Piece(row, 6, KNIGHT, player));
+  result.push(new Piece(row, 7, ROOK, player));
+}
+
+function getInitialPieces() {
+  let result = [];
+
+  addFirstRowPieces(result, 0, WHITE_PLAYER);
+  addFirstRowPieces(result, 7, BLACK_PLAYER);
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    result.push(new Piece(1, i, PAWN, WHITE_PLAYER));
+    result.push(new Piece(6, i, PAWN, BLACK_PLAYER));
   }
-  return false;
+  return result;
 }
-//  משתנה בורדאטא מכיל אובייקט חדש שמכיל בתוכו את המידע על הכלים
-function initGame() {
-  // Create list of pieces (32 total)
-  boardData = new BoardData(getInitialPieces());
-  createChessBoard(boardData);
-}
+
 
 function createChessBoard(boardData) {
   table = document.getElementById(CHESS_BOARD_ID);
@@ -306,7 +323,7 @@ function createChessBoard(boardData) {
   }
 
   // Create empty chess board HTML:
-  table = document.createElement('table');
+  table = document.createElement("table");
   table.id = CHESS_BOARD_ID;
   document.body.appendChild(table);
   for (let row = 0; row < BOARD_SIZE; row++) {
@@ -314,11 +331,11 @@ function createChessBoard(boardData) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       const cell = rowElement.insertCell();
       if ((row + col) % 2 === 0) {
-        cell.className = 'light-cell';
+        cell.className = "light-cell";
       } else {
-        cell.className = 'dark-cell';
+        cell.className = "dark-cell";
       }
-      cell.addEventListener('click', (event) => onCellClick(event, row, col));
+      cell.addEventListener("click", (event) => onCellClick(event, row, col));
     }
   }
 
@@ -328,5 +345,13 @@ function createChessBoard(boardData) {
     addImage(cell, piece.player, piece.type);
   }
 }
-// "מחכה שהדפדפן ייטען ומפעילה את פונקציית "עיניתגיימ
-window.addEventListener('load', initGame);
+
+//  משתנה בורדאטא מכיל אובייקט חדש שמכיל בתוכו את כל המידע על הכלים
+function initGame() {
+  // Create list of pieces (32 total)
+  boardData = new BoardData(getInitialPieces());
+  createChessBoard(boardData);
+}
+
+// "מחכה שהדפדפן ייטען ומפעילה את פונקציית "איניתגיימ
+window.addEventListener("load", initGame);
