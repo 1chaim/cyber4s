@@ -31,7 +31,7 @@ class Piece {
       } else if (this.type === QUEEN) {
         moves = this.getQueenMoves(boardData);
       } else {
-        console.log("Unknown type", type);
+        console.log("Unknown type", type)
       }
   
       // Get filtered absolute moves
@@ -39,12 +39,7 @@ class Piece {
       for (const absoluteMove of moves) {
         const absoluteRow = absoluteMove[0];
         const absoluteCol = absoluteMove[1];
-        if (
-          absoluteRow >= 0 &&
-          absoluteRow <= 7 &&
-          absoluteCol >= 0 &&
-          absoluteCol <= 7
-        ) {
+        if (absoluteRow >= 0 && absoluteRow <= 7 && absoluteCol >= 0 && absoluteCol <= 7) {
           filteredMoves.push(absoluteMove);
         }
       }
@@ -73,6 +68,7 @@ class Piece {
         result.push(position);
       }
   
+  
       return result;
     }
   
@@ -95,29 +91,17 @@ class Piece {
           result.push([row, col]);
         } else if (boardData.isPlayer(row, col, this.getOpponent())) {
           result.push([row, col]);
-          console.log("opponent");
           return result;
         } else if (boardData.isPlayer(row, col, this.player)) {
-          console.log("player");
           return result;
         }
       }
-      console.log("all empty");
       return result;
     }
   
     getKnightMoves(boardData) {
       let result = [];
-      const relativeMoves = [
-        [2, 1],
-        [2, -1],
-        [-2, 1],
-        [-2, -1],
-        [-1, 2],
-        [1, 2],
-        [-1, -2],
-        [1, -2],
-      ];
+      const relativeMoves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [-1, 2], [1, 2], [-1, -2], [1, -2]];
       for (let relativeMove of relativeMoves) {
         let row = this.row + relativeMove[0];
         let col = this.col + relativeMove[1];
@@ -139,16 +123,7 @@ class Piece {
   
     getKingMoves(boardData) {
       let result = [];
-      const relativeMoves = [
-        [-1, -1],
-        [-1, 0],
-        [-1, 1],
-        [0, -1],
-        [0, 1],
-        [1, -1],
-        [1, 0],
-        [1, 1],
-      ];
+      const relativeMoves = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
       for (let relativeMove of relativeMoves) {
         let row = this.row + relativeMove[0];
         let col = this.col + relativeMove[1];
@@ -165,4 +140,3 @@ class Piece {
       return result;
     }
   }
-  
